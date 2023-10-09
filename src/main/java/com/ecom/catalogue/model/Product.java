@@ -51,6 +51,16 @@ public class Product {
     @NotNull
     private double sellPrice;
 
+    public int getStock() {
+        return stock;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
+
+    private int stock;
+
     public long getProductId() {
         return productId;
     }
@@ -105,5 +115,21 @@ public class Product {
 
     public void setMaxOQ(int maxOQ) {
         this.maxOQ = maxOQ;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "productId=" + productId +
+                ", productName='" + productName + '\'' +
+                ", description='" + description + '\'' +
+                ", category='" + category + '\'' +
+                ", brand='" + brand + '\'' +
+                ", minOQ=" + minOQ +
+                ", maxOQ=" + maxOQ +
+                ", mrp=" + mrp +
+                ", sellPrice=" + sellPrice +
+                ", stock=" + stock +
+                '}';
     }
 }
