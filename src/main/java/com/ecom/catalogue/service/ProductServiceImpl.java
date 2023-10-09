@@ -41,7 +41,7 @@ public class ProductServiceImpl implements ProductService{
             return newProduct;
         }
         else{
-            throw new ProductNotFoundException("Product Id "+product.getProductId()+" not found in DB");
+            throw new ProductNotFoundException("Product Id "+product.getProductId()+" not found in catalogue");
         }
     }
 
