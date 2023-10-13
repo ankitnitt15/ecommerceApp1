@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 @Document(indexName = AppConstants.ES_INDEX)
 public class ProductES {
     @Id
-    private long productId;
+    private String productId;
 
     @Field(type= FieldType.Text, name="productName")
     private String productName;
@@ -65,11 +65,11 @@ public class ProductES {
     @Field(type= FieldType.Integer, name="stock")
     private int stock;
 
-    public long getProductId() {
+    public String getProductId() {
         return productId;
     }
 
-    public void setProductId(long productId) {
+    public void setProductId(String productId) {
         this.productId = productId;
     }
 
