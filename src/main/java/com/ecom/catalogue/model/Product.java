@@ -1,5 +1,6 @@
 package com.ecom.catalogue.model;
 
+import com.ecom.catalogue.utils.AppConstants;
 import com.mongodb.lang.NonNull;
 import com.mongodb.lang.Nullable;
 import jakarta.validation.constraints.NotNull;

@@ -2,11 +2,14 @@ package com.ecom.catalogue.service;
 
 import com.ecom.catalogue.exception.ProductNotFoundException;
 import com.ecom.catalogue.model.Product;
+import com.ecom.catalogue.model.ProductES;
+import com.ecom.catalogue.repository.ElasticSearchRepository;
 import com.ecom.catalogue.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,13 +20,32 @@ public class ProductServiceImpl implements ProductService{
     @Autowired
     private ProductRepository repository;
 
+    @Autowired
+    private ElasticSearchRepository elasticSearchRepository;
+
     @Override
-    public Product createProduct(Product product) {
-        return repository.save(product);
+    public Product createProduct(Product product) throws IOException {
+        Product prod = repository.save(product);
+        elasticSearchRepository.createOrUpdateDocument(convertToESDocument(product));
+        return prod;
+    }
+
+    private ProductES convertToESDocument(Product product) {
+        ProductES productES = new ProductES();
+        productES.setProductId(String.valueOf(product.getProductId()));
+        productES.setProductName(product.getProductName());
+        productES.setCategory(product.getCategory());
+        productES.setBrand(product.getBrand());
+        productES.setDescription(product.getDescription());
+        productES.setSellPrice(product.getSellPrice());
+        productES.setMaxOQ(product.getMaxOQ());
+        productES.setMinOQ(product.getMinOQ());
+        productES.setStock(product.getStock());
+        return productES;
     }
 
     @Override
-    public Product updateProduct(Product product) {
+    public Product updateProduct(Product product) throws IOException {
         Optional<Product> dbProduct = this.repository.findById(product.getProductId());
 
         if(dbProduct.isPresent()){
@@ -39,6 +61,7 @@ public class ProductServiceImpl implements ProductService{
             newProduct.setProductId(product.getProductId());
             newProduct.setStock(product.getStock());
             repository.save(newProduct);
+            elasticSearchRepository.createOrUpdateDocument(convertToESDocument(product));
             return newProduct;
         }
         else{
@@ -47,7 +70,7 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public Product processProductFeed(Product product) {
+    public Product processProductFeed(Product product) throws IOException {
         Optional<Product> dbProduct = this.repository.findById(product.getProductId());
 
         if(dbProduct.isPresent()){

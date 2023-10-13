@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -37,13 +38,13 @@ public class ElasticSearchRepository {
     }
 
     public ProductES getDocumentbyId(String id) throws IOException {
-        ProductES product = null;
+
         GetResponse<ProductES> response = elasticsearchClient.get(i -> i.index(AppConstants.ES_INDEX)
                 .id(id),
                 ProductES.class);
 
         if(response.found()){
-            return product;
+            return response.source();
         }
         else{
             throw new ProductNotFoundException("Document with id "+id+" not found in Elasticsearch index");
@@ -65,7 +66,7 @@ public class ElasticSearchRepository {
     }
 
     public List<ProductES> findProducts(String text) throws IOException {
-        List<ProductES> products= null;
+        List<ProductES> products = new ArrayList<>();
         Query byName = MatchQuery.of(m->m.field("productName")
                 .query(text))
                 ._toQuery();
