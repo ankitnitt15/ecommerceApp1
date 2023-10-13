@@ -9,6 +9,8 @@ public interface ProductService {
 
     Product updateProduct(Product product);
 
+    Product processProductFeed(Product product);
+
     List<Product> getProductsByCategory(String category);
 
     List<Product> getProductsByName(String name);

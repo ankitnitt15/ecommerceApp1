@@ -1,6 +1,7 @@
 package com.ecom.catalogue.kafka;
 
 import com.ecom.catalogue.model.Product;
+import com.ecom.catalogue.utils.AppConstants;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;

@@ -47,6 +47,18 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    public Product processProductFeed(Product product) {
+        Optional<Product> dbProduct = this.repository.findById(product.getProductId());
+
+        if(dbProduct.isPresent()){
+            return updateProduct(product);
+        }
+        else{
+            return createProduct(product);
+        }
+    }
+
+    @Override
     public List<Product> getProductsByCategory(String category) {
         List<Product> dbProduct = this.repository.findByCategory(category);
 
