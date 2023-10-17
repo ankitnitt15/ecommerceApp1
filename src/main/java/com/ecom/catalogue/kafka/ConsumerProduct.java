@@ -9,17 +9,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
-@Service
-public class Consumer {
+import java.io.IOException;
 
-    private static final Logger logger = LoggerFactory.getLogger(Consumer.class);
+@Service
+public class ConsumerProduct {
+
+    private static final Logger logger = LoggerFactory.getLogger(ConsumerProduct.class);
 
     @Autowired
     private ProductService productService;
 
-    @KafkaListener(topics = AppConstants.TOPIC_NAME,
-                    groupId = AppConstants.GROUP_ID)
-    public void consume(Product product){
+    @KafkaListener(topics = AppConstants.PRODUCT_TOPIC,
+                    groupId = AppConstants.PROD_GROUP_ID)
+    public void consume(Product product) throws IOException {
         logger.info(String.format("Message received -> %s", product.toString()));
         this.productService.createProduct(product);
     }

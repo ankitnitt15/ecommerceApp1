@@ -13,9 +13,9 @@ import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 
 @Service
-public class Producer {
+public class ProducerProduct {
 
-    private static final Logger logger = LoggerFactory.getLogger(Producer.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProducerProduct.class);
 
     @Autowired
     private KafkaTemplate<String, Product> template;
@@ -25,7 +25,7 @@ public class Producer {
 
         Message<Product> message = MessageBuilder
                 .withPayload(product)
-                .setHeader(KafkaHeaders.TOPIC, AppConstants.TOPIC_NAME)
+                .setHeader(KafkaHeaders.TOPIC, AppConstants.PRODUCT_TOPIC)
                 .build();
 
         template.send(message);

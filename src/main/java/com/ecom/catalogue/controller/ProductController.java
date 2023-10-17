@@ -1,8 +1,11 @@
 package com.ecom.catalogue.controller;
 
+import com.ecom.catalogue.exception.CategoryNotFoundException;
 import com.ecom.catalogue.exception.ProductNotFoundException;
 import com.ecom.catalogue.model.Product;
+import com.ecom.catalogue.repository.CategoryRepository;
 import com.ecom.catalogue.repository.ElasticSearchRepository;
+import com.ecom.catalogue.service.CategoryService;
 import com.ecom.catalogue.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.client.erhlc.ElasticsearchRestTemplate;
@@ -22,13 +25,16 @@ public class ProductController {
     @Autowired
     private ElasticSearchRepository elasticSearchRepository;
 
+    @Autowired
+    private CategoryService categoryService;
+
     @PostMapping("/products")
-    public ResponseEntity<Product> createProduct(@RequestBody Product product){
+    public ResponseEntity<Product> createProduct(@RequestBody Product product) throws IOException {
         return ResponseEntity.ok().body(this.service.createProduct(product));
     }
 
     @PutMapping("/products/{productId}")
-    public ResponseEntity<Product> updateProduct(@PathVariable Long productId, @RequestBody Product product){
+    public ResponseEntity<Product> updateProduct(@PathVariable Long productId, @RequestBody Product product) throws IOException {
         product.setProductId(productId);
         return ResponseEntity.ok().body(this.service.updateProduct(product));
     }
@@ -43,7 +49,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/search/text/{text}")
+    @GetMapping("/search/product/{text}")
     public ResponseEntity getProductsByName(@PathVariable String text) throws IOException{
         try{
             return ResponseEntity.ok().body(this.elasticSearchRepository.findProducts(text));
@@ -89,6 +95,26 @@ public class ProductController {
             return ResponseEntity.ok().body(e.getMessage());
         }
 
+    }
+
+    @GetMapping("/search/category/{id}")
+    public ResponseEntity getCategoryById(@PathVariable String id){
+        try{
+            return ResponseEntity.ok().body(this.categoryService.getCategory(id));
+        }
+        catch(CategoryNotFoundException e){
+            return ResponseEntity.ok().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/search/categories")
+    public ResponseEntity getCategories(){
+        try{
+            return ResponseEntity.ok().body(this.categoryService.getAllCategories());
+        }
+        catch(CategoryNotFoundException e){
+            return ResponseEntity.ok().body(e.getMessage());
+        }
     }
 
 }
