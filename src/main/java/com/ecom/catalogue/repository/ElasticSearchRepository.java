@@ -99,9 +99,9 @@ public class ElasticSearchRepository {
             Map<Integer, Integer> stock = new HashMap<>();
             for(Hit<ProductES> p : list){
                 prods.add(Integer.parseInt(p.source().getProductId()));
-                stock = inventoryGrpcClient.getStock(prods);
                 products.add(p.source());
             }
+            stock = inventoryGrpcClient.getStock(prods);
             for(ProductES p : products){
                 p.setStock(stock.get(Integer.parseInt(p.getProductId())));
             }
