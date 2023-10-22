@@ -1,0 +1,15 @@
+syntax = "proto3";
+option java_multiple_files = true;
+package com.ecom.inventory.grpc;
+
+message InventoryRequest{
+  repeated int32 products = 1;
+}
+
+message InventoryResponse{
+  map<int32, int32> stock = 1;
+}
+
+service InventoryService{
+  rpc getInventory(InventoryRequest) returns (InventoryResponse);
+}

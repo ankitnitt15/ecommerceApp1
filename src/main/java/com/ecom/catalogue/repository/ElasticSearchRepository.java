@@ -9,19 +9,25 @@ import co.elastic.clients.elasticsearch.core.search.Hit;
 import com.ecom.catalogue.exception.ProductNotFoundException;
 import com.ecom.catalogue.model.Product;
 import com.ecom.catalogue.model.ProductES;
+import com.ecom.catalogue.service.InventoryGrpcClient;
 import com.ecom.catalogue.utils.AppConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class ElasticSearchRepository {
 
     @Autowired
     private ElasticsearchClient elasticsearchClient;
+
+    @Autowired
+    private InventoryGrpcClient inventoryGrpcClient;
 
     public String createOrUpdateDocument(ProductES product) throws IOException {
 
@@ -88,9 +94,16 @@ public class ElasticSearchRepository {
                 ProductES.class);
 
         if(response.hits().total().value() > 0){
+            List<Integer> prods = new ArrayList<>();
             List<Hit<ProductES>> list = response.hits().hits();
+            Map<Integer, Integer> stock = new HashMap<>();
             for(Hit<ProductES> p : list){
+                prods.add(Integer.parseInt(p.source().getProductId()));
+                stock = inventoryGrpcClient.getStock(prods);
                 products.add(p.source());
+            }
+            for(ProductES p : products){
+                p.setStock(stock.get(Integer.parseInt(p.getProductId())));
             }
         }
         else{
